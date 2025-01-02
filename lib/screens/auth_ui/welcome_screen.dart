@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
+import 'package:next_cart/controllers/google_sign_in_controller.dart';
+import 'package:next_cart/screens/auth_ui/sign_in_screen.dart';
 import 'package:next_cart/utils/app_constant_class.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  WelcomeScreen({super.key});
+
+  final GoogleSignInController googleSignInController =
+      Get.put(GoogleSignInController());
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +50,20 @@ class WelcomeScreen extends StatelessWidget {
             height: Get.height * .1,
           ),
           buildButtons(mq, Image.asset('assets/images/google.png'),
-              'Sign In With Google'),
+              'Sign In With Google', () {
+            googleSignInController.signInWithGoogle();
+          }),
           buildButtons(mq, Image.asset('assets/images/email-logo.jpg'),
-              'Sign In With Gmail')
+              'Sign In With Gmail', () {
+            Get.to(() => SignInScreen());
+          })
         ],
       ),
     );
   }
 
-  Padding buildButtons(Size mq, Image image, String text) {
+  Padding buildButtons(
+      Size mq, Image image, String text, VoidCallback callBack) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
@@ -62,7 +72,9 @@ class WelcomeScreen extends StatelessWidget {
             color: AppConst.appMainColor,
             borderRadius: BorderRadius.circular(15)),
         child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              callBack();
+            },
             icon: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
